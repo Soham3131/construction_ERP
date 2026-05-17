@@ -7,6 +7,7 @@ import Subscription from '../models/Subscription';
 import User from '../models/User';
 import { AuthRequest } from '../middleware/auth';
 import { sendEmail } from '../utils/email';
+import { notifyByRole } from '../utils/notify';
 import {
   registrationConfirmationEmail,
   approvalEmail,
@@ -126,6 +127,15 @@ export const applyRegistration = asyncHandler(async (req: Request, res: Response
     html: registrationConfirmationEmail(orgName, adminName),
   });
 
+  // In-app notify all Super Admins
+  await notifyByRole('SUPER_ADMIN', {
+    type: 'REGISTRATION_SUBMITTED',
+    title: 'New organization registration',
+    message: `${orgName} (${code}) submitted a registration request by ${adminName}.`,
+    link: '/admin/registrations',
+    meta: { registrationId: reg._id, orgName, code, adminEmail },
+  });
+
   res.status(201).json({
     success: true,
     message: 'Registration submitted successfully. You will receive an email once your organization is reviewed.',
@@ -243,6 +253,15 @@ export const approveRegistration = asyncHandler(async (req: AuthRequest, res: Re
     html: approvalEmail(reg.orgName, reg.adminName, dept.code, setPasswordLink, plan),
   });
 
+  // In-app notify all Super Admins (audit log style)
+  await notifyByRole('SUPER_ADMIN', {
+    type: 'REGISTRATION_APPROVED',
+    title: 'Registration approved',
+    message: `${reg.orgName} (${dept.code}) was approved on the ${plan} plan.`,
+    link: '/admin/departments',
+    meta: { departmentId: dept._id, code: dept.code, plan },
+  });
+
   res.json({
     success: true,
     message: emailResult.ok
@@ -317,6 +336,14 @@ export const rejectRegistration = asyncHandler(async (req: AuthRequest, res: Res
     to: reg.adminEmail,
     subject: 'Registration Update — Constructor ERP',
     html: rejectionEmail(reg.orgName, reg.adminName, reason),
+  });
+
+  await notifyByRole('SUPER_ADMIN', {
+    type: 'REGISTRATION_REJECTED',
+    title: 'Registration rejected',
+    message: `${reg.orgName} (${reg.code}) was rejected${reason ? ': ' + reason : ''}.`,
+    link: '/admin/registrations',
+    meta: { registrationId: reg._id, reason },
   });
 
   res.json({ success: true, data: reg });

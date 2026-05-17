@@ -18,6 +18,10 @@ export const createProject = asyncHandler(async (req: AuthRequest, res: Response
   const project = await Project.create({
     projectId: generateProjectId(),
     ...req.body,
+    coordinates: req.body.coordinates || {
+      lat: 29.0588 + (Math.random() * 2 - 1), // rough Haryana center +/- 1 degree
+      lng: 76.0856 + (Math.random() * 2 - 1),
+    },
     department: req.user!.department,
     proposedBy: req.user!._id,
     status: 'PROPOSED',

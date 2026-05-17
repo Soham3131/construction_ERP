@@ -19,6 +19,10 @@ export interface IProject extends Document {
   name: string;
   description?: string;
   location: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
   district?: string;
   state?: string;
   estimatedCost: number;
@@ -40,6 +44,11 @@ export interface IProject extends Document {
   endDate?: Date;
   actualEndDate?: Date;
   overallProgress: number;
+  budget: {
+    sanctioned: number;
+    utilized: number;
+    remaining: number;
+  };
   proposedAt: Date;
   sanctionedAt?: Date;
   awardedAt?: Date;
@@ -61,6 +70,10 @@ const projectSchema = new Schema<IProject>(
     name: { type: String, required: true, trim: true },
     description: String,
     location: { type: String, required: true },
+    coordinates: {
+      lat: Number,
+      lng: Number,
+    },
     district: String,
     state: { type: String, default: 'Haryana' },
     estimatedCost: { type: Number, required: true, min: 0 },
@@ -92,6 +105,11 @@ const projectSchema = new Schema<IProject>(
     endDate: Date,
     actualEndDate: Date,
     overallProgress: { type: Number, default: 0, min: 0, max: 100 },
+    budget: {
+      sanctioned: { type: Number, default: 0 },
+      utilized: { type: Number, default: 0 },
+      remaining: { type: Number, default: 0 },
+    },
     proposedAt: { type: Date, default: Date.now },
     sanctionedAt: Date,
     awardedAt: Date,

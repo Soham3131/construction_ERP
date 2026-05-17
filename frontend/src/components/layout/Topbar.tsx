@@ -1,8 +1,9 @@
 import { useAuthStore } from '../../store/authStore';
-import { Bell, LogOut, Menu, User as UserIcon, Search } from 'lucide-react';
+import { LogOut, Menu, User as UserIcon, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { roleLabel } from '../../utils/format';
 import { useState } from 'react';
+import NotificationsDropdown from './NotificationsDropdown';
 
 export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
   const { user, logout } = useAuthStore();
@@ -36,10 +37,7 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="relative p-2 hover:bg-slate-100 rounded-full">
-            <Bell className="w-5 h-5 text-slate-600" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-erp-danger rounded-full" />
-          </button>
+          <NotificationsDropdown />
 
           <div className="relative">
             <button

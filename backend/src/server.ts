@@ -45,6 +45,8 @@ import accRoutes from './routes/acc.routes';
 import contRoutes from './routes/cont.routes';
 import inspectionRoutes from './routes/inspection.routes';
 import materialRequestRoutes from './routes/materialRequest.routes';
+import accountingRoutes from './routes/accountingRoutes';
+import gisRoutes from './routes/gis.routes';
 
 const app = express();
 
@@ -119,6 +121,8 @@ app.use('/api/inspections', inspectionRoutes);     // site inspections
 app.use('/api/material-requests', materialRequestRoutes);
 app.use('/api/daily-progress', dailyProgressRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/accounting', accountingRoutes);
+app.use('/api/gis', gisRoutes);
 
 // Error handlers
 app.use(notFound);

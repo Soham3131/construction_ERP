@@ -3,6 +3,7 @@ import { customAlphabet } from 'nanoid';
 import asyncHandler from '../utils/asyncHandler';
 import SupportTicket from '../models/SupportTicket';
 import { AuthRequest } from '../middleware/auth';
+import { notifyByRole, notifyUser } from '../utils/notify';
 
 const numeric = customAlphabet('0123456789', 5);
 const generateTicketId = () => `TKT-${new Date().getFullYear()}-${numeric()}`;
@@ -39,6 +40,16 @@ export const createTicket = asyncHandler(async (req: AuthRequest, res: Response)
     department: req.user!.department,
     status: 'OPEN',
   });
+
+  // Notify all Super Admins
+  await notifyByRole('SUPER_ADMIN', {
+    type: 'SUPPORT_TICKET',
+    title: `New support ticket ${t.priority === 'CRITICAL' ? '· CRITICAL' : ''}`,
+    message: `${t.ticketId}: ${t.subject || 'Support request'} (from ${req.user!.name})`,
+    link: '/admin/support',
+    meta: { ticketId: t._id, priority: t.priority },
+  });
+
   res.status(201).json({ success: true, data: t });
 });
 
@@ -59,6 +70,18 @@ export const respondToTicket = asyncHandler(async (req: AuthRequest, res: Respon
   t.responses.push({ by: req.user!._id, message, at: new Date() });
   if (t.status === 'OPEN') t.status = 'IN_PROGRESS';
   await t.save();
+
+  // Notify the original requester when a Super Admin or staff replies
+  if (req.user!.role === 'SUPER_ADMIN' && t.raisedBy && String(t.raisedBy) !== String(req.user!._id)) {
+    await notifyUser(t.raisedBy, {
+      type: 'SUPPORT_REPLY',
+      title: 'Reply on your support ticket',
+      message: `Support responded to ${t.ticketId}: ${message?.slice(0, 80) || ''}${message && message.length > 80 ? '…' : ''}`,
+      link: '/support',
+      meta: { ticketId: t._id },
+    });
+  }
+
   res.json({ success: true, data: t });
 });
 

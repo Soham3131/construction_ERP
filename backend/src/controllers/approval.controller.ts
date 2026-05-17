@@ -5,6 +5,8 @@ import Project from '../models/Project';
 import Tender from '../models/Tender';
 import MeasurementBook from '../models/MeasurementBook';
 import Bill from '../models/Bill';
+import Voucher from '../models/Voucher';
+import Account from '../models/Account';
 import { AuthRequest } from '../middleware/auth';
 
 const ROLE_TO_STAGE: Record<string, string[]> = {
@@ -114,6 +116,92 @@ async function onAllApproved(entityType: string, entityId: string) {
   } else if (entityType === 'MB') {
     await MeasurementBook.findByIdAndUpdate(entityId, { status: 'EE_APPROVED', approvedAt: new Date() });
   } else if (entityType === 'BILL') {
+    const bill = await Bill.findById(entityId);
+    if (bill) {
+      // 1. Find Project Expense Account & Contractor Account (For simplicity, auto-create if not exists or assume setup)
+      // We will look up Accounts by referenceId or type.
+      let projectExpenseAcc = await Account.findOne({ referenceId: bill.project, type: 'EXPENSE' });
+      if (!projectExpenseAcc) {
+        const proj = await Project.findById(bill.project);
+        projectExpenseAcc = await Account.create({
+          accountNumber: `EXP-PROJ-${bill.project.toString().slice(-6)}`,
+          name: `Project Expense: ${proj?.name || bill.project}`,
+          type: 'EXPENSE',
+          subType: 'Direct Expenses',
+          department: bill.department,
+          referenceId: bill.project,
+          isActive: true
+        });
+      }
+
+      let contractorAcc = await Account.findOne({ referenceId: bill.contractor, type: 'LIABILITY' });
+      if (!contractorAcc) {
+        contractorAcc = await Account.create({
+          accountNumber: `CRED-${bill.contractor.toString().slice(-6)}`,
+          name: `Contractor Payable`,
+          type: 'LIABILITY',
+          subType: 'Sundry Creditors',
+          department: bill.department,
+          referenceId: bill.contractor,
+          isActive: true
+        });
+      }
+
+      // Default Tax/Retention Accounts
+      let gstAcc = await Account.findOne({ department: bill.department, subType: 'Duties & Taxes', name: /GST/i });
+      if (!gstAcc) gstAcc = await Account.create({ accountNumber: `GST-${Date.now()}`, name: 'GST Payable', type: 'LIABILITY', subType: 'Duties & Taxes', department: bill.department });
+
+      let tdsAcc = await Account.findOne({ department: bill.department, subType: 'Duties & Taxes', name: /TDS/i });
+      if (!tdsAcc) tdsAcc = await Account.create({ accountNumber: `TDS-${Date.now()}`, name: 'TDS Payable', type: 'LIABILITY', subType: 'Duties & Taxes', department: bill.department });
+      
+      let secAcc = await Account.findOne({ department: bill.department, subType: 'Current Liabilities', name: /Security/i });
+      if (!secAcc) secAcc = await Account.create({ accountNumber: `SEC-${Date.now()}`, name: 'Security Deposits', type: 'LIABILITY', subType: 'Current Liabilities', department: bill.department });
+
+      let retAcc = await Account.findOne({ department: bill.department, subType: 'Current Liabilities', name: /Retention/i });
+      if (!retAcc) retAcc = await Account.create({ accountNumber: `RET-${Date.now()}`, name: 'Retention Money', type: 'LIABILITY', subType: 'Current Liabilities', department: bill.department });
+
+      const entries = [];
+      // Debit Project Expense (Gross Amount)
+      entries.push({ account: projectExpenseAcc._id, dr: bill.currentBillAmount, cr: 0, narration: `Bill Approved: ${bill.billNumber}` });
+      
+      // Credit Deductions & Contractor
+      if (bill.gstAmount > 0) entries.push({ account: gstAcc._id, dr: 0, cr: bill.gstAmount, narration: 'GST Deduction' });
+      if (bill.tdsAmount > 0) entries.push({ account: tdsAcc._id, dr: 0, cr: bill.tdsAmount, narration: 'TDS Deduction' });
+      if (bill.securityAmount > 0) entries.push({ account: secAcc._id, dr: 0, cr: bill.securityAmount, narration: 'Security Deposit' });
+      if (bill.retentionAmount > 0) entries.push({ account: retAcc._id, dr: 0, cr: bill.retentionAmount, narration: 'Retention Money' });
+      entries.push({ account: contractorAcc._id, dr: 0, cr: bill.netPayable, narration: `Net Payable for ${bill.billNumber}` });
+
+      const voucher = await Voucher.create({
+        voucherNumber: `JV-${Date.now()}`,
+        date: new Date(),
+        type: 'JOURNAL',
+        department: bill.department,
+        project: bill.project,
+        bill: bill._id,
+        entries,
+        narration: `Automatic JV for Bill ${bill.billNumber}`,
+        status: 'POSTED',
+        // Assuming system generated, using a dummy or first super admin. For now we will just use contractor ID as createdBy to bypass requirement or fetch admin
+        createdBy: bill.contractor, 
+      });
+
+      // Update balances
+      for (const entry of entries) {
+        const acc = await Account.findById(entry.account);
+        if (acc) {
+          let balanceChange = 0;
+          if (acc.type === 'ASSET' || acc.type === 'EXPENSE') balanceChange = (entry.dr || 0) - (entry.cr || 0);
+          else balanceChange = (entry.cr || 0) - (entry.dr || 0);
+          acc.currentBalance += balanceChange;
+          await acc.save();
+        }
+      }
+
+      // Update Project utilized budget
+      await Project.findByIdAndUpdate(bill.project, {
+        $inc: { 'budget.utilized': bill.currentBillAmount }
+      });
+    }
     await Bill.findByIdAndUpdate(entityId, { status: 'TREASURY_PENDING' });
   }
 }

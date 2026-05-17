@@ -3,26 +3,28 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api/client';
 import { useAuthStore } from '../../store/authStore';
 import toast from 'react-hot-toast';
-import { Building2, Lock, Mail, Loader2 } from 'lucide-react';
+import { Building2, Lock, Mail, Loader2, AlertTriangle } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { login } = useAuthStore();
   const nav = useNavigate();
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     try {
       const res = await api.post('/auth/login', { email, password });
       const { token, ...user } = res.data.data;
       login(user as any, token);
       toast.success(`Welcome, ${user.name}`);
       nav('/dashboard');
-    } catch {
-      // toast handled by interceptor
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Invalid credentials, please try again.');
     } finally {
       setLoading(false);
     }
@@ -104,6 +106,25 @@ export default function LoginPage() {
 
             <h2 className="text-2xl font-bold text-slate-800 mb-1">Sign In</h2>
             <p className="text-sm text-slate-500 mb-6">Use your government credentials</p>
+
+            {error && (
+              <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200">
+                <div className="flex gap-3">
+                  <div className="text-red-600 mt-0.5">
+                    <AlertTriangle className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-red-800">Login Failed</h3>
+                    <p className="text-sm text-red-700 mt-1">{error}</p>
+                    <div className="mt-2">
+                      <Link to="/forgot-password" className="text-sm font-medium text-red-800 hover:text-red-900 underline">
+                        Forgot your password? Reset it here
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <form onSubmit={submit} className="space-y-4">
               <div>

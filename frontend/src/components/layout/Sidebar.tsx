@@ -6,7 +6,7 @@ import {
   Receipt, Wallet, ShieldCheck, Users, Building2, X,
   Calendar, CreditCard, Settings, Inbox, Headphones,
   Layers, Briefcase, FolderOpen, BarChart3, Bell, KeyRound,
-  AlertTriangle, Package, Mail,
+  AlertTriangle, Package, Mail, MapPin,
 } from 'lucide-react';
 import { UserRole } from '../../types';
 import clsx from 'clsx';
@@ -51,9 +51,14 @@ const NAV: NavItem[] = [
 
   // Accountant — Finance
   { to: '/acc/bill-queue', label: 'Bill Verification Queue', icon: Inbox, roles: ['ACCOUNTANT'], group: 'Finance' },
-  { to: '/acc/deductions', label: 'GST / TDS Management', icon: BarChart3, roles: ['ACCOUNTANT'], group: 'Finance' },
+  { to: '/acc/ledger', label: 'Chart of Accounts', icon: FolderOpen, roles: ['ACCOUNTANT'], group: 'Finance' },
+  { to: '/acc/vouchers', label: 'Voucher Entry', icon: ClipboardList, roles: ['ACCOUNTANT'], group: 'Finance' },
   { to: '/acc/budget', label: 'Budget Monitor', icon: Wallet, roles: ['ACCOUNTANT'], group: 'Finance' },
   { to: '/acc/contractor-payments', label: 'Contractor Payments', icon: Users, roles: ['ACCOUNTANT'], group: 'Finance' },
+  { to: '/acc/contractor-statement', label: 'Contractor Statement', icon: FileText, roles: ['ACCOUNTANT'], group: 'Finance' },
+  { to: '/acc/project-budgets', label: 'Project Budgets', icon: BarChart3, roles: ['ACCOUNTANT'], group: 'Finance' },
+  { to: '/acc/trial-balance', label: 'Trial Balance', icon: Scale, roles: ['ACCOUNTANT'], group: 'Finance' },
+  { to: '/acc/deductions', label: 'GST / TDS Management', icon: ShieldCheck, roles: ['ACCOUNTANT'], group: 'Finance' },
 
   // Contractor — Workspace
   { to: '/contractor/projects', label: 'My Projects', icon: Briefcase, roles: ['CONTRACTOR'], group: 'Workspace' },
@@ -69,6 +74,7 @@ const NAV: NavItem[] = [
   { to: '/ce/engineers', label: 'Engineer Performance', icon: Users, roles: ['CE'], group: 'Governance' },
   { to: '/ce/inspections', label: 'Site Inspections', icon: CheckCircle2, roles: ['CE','EE','SDO','DEPT_ADMIN'], group: 'Governance' },
   { to: '/ce/approval-history', label: 'My Approval History', icon: ShieldCheck, roles: ['CE'], group: 'Governance' },
+  { to: '/gis-tracking', label: 'GIS Tracking', icon: MapPin, roles: ['SUPER_ADMIN','DEPT_ADMIN','CE','EE','SDO'], group: 'Governance' },
   { to: '/notifications', label: 'Notifications', icon: Bell, roles: ['SUPER_ADMIN','DEPT_ADMIN','CE','EE','SDO','JE','CONTRACTOR','ACCOUNTANT'], group: 'Main' },
 
   // DEPT ADMIN — operational management

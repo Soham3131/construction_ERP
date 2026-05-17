@@ -4,6 +4,8 @@ import Payment from '../models/Payment';
 import Bill from '../models/Bill';
 import { AuthRequest } from '../middleware/auth';
 import { generatePaymentId } from '../utils/generateId';
+import Voucher from '../models/Voucher';
+import Account from '../models/Account';
 
 // Stage 11: Treasury releases payment
 export const releasePayment = asyncHandler(async (req: AuthRequest, res: Response) => {
@@ -36,6 +38,61 @@ export const releasePayment = asyncHandler(async (req: AuthRequest, res: Respons
   bill.status = 'PAID';
   bill.payment = pay._id;
   await bill.save();
+
+  // Create Accounting Voucher for Payment
+  let contractorAcc = await Account.findOne({ referenceId: bill.contractor, type: 'LIABILITY' });
+  if (!contractorAcc) {
+    contractorAcc = await Account.create({
+      accountNumber: `CRED-${bill.contractor.toString().slice(-6)}`,
+      name: `Contractor Payable`,
+      type: 'LIABILITY',
+      subType: 'Sundry Creditors',
+      department: bill.department,
+      referenceId: bill.contractor,
+      isActive: true
+    });
+  }
+
+  let bankAcc = await Account.findOne({ department: bill.department, subType: 'Bank Accounts' });
+  if (!bankAcc) {
+    bankAcc = await Account.create({
+      accountNumber: `BANK-${Date.now()}`,
+      name: `Main Bank Account`,
+      type: 'ASSET',
+      subType: 'Bank Accounts',
+      department: bill.department,
+      isActive: true
+    });
+  }
+
+  const entries = [
+    { account: contractorAcc._id, dr: bill.netPayable, cr: 0, narration: `Payment Released: ${pay.paymentId}` },
+    { account: bankAcc._id, dr: 0, cr: bill.netPayable, narration: `Payment to Contractor: ${pay.paymentId}` }
+  ];
+
+  const voucher = await Voucher.create({
+    voucherNumber: `PV-${Date.now()}`,
+    date: new Date(),
+    type: 'PAYMENT',
+    department: bill.department,
+    project: bill.project,
+    bill: bill._id,
+    entries,
+    narration: `Automatic PV for Payment ${pay.paymentId}`,
+    status: 'POSTED',
+    createdBy: req.user!._id,
+  });
+
+  for (const entry of entries) {
+    const acc = await Account.findById(entry.account);
+    if (acc) {
+      let balanceChange = 0;
+      if (acc.type === 'ASSET' || acc.type === 'EXPENSE') balanceChange = (entry.dr || 0) - (entry.cr || 0);
+      else balanceChange = (entry.cr || 0) - (entry.dr || 0);
+      acc.currentBalance += balanceChange;
+      await acc.save();
+    }
+  }
 
   res.status(201).json({ success: true, data: pay });
 });

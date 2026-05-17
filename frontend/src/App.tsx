@@ -65,6 +65,7 @@ import TenderOversightPage from './pages/ce/TenderOversightPage';
 import InspectionsPage from './pages/ce/InspectionsPage';
 import ApprovalHistoryPage from './pages/ce/ApprovalHistoryPage';
 import NotificationsPage from './pages/NotificationsPage';
+import ProjectGisTracking from './pages/dashboards/ProjectGisTracking';
 
 // EE — Operations
 import EEApprovalQueuePage from './pages/ee/EEApprovalQueuePage';
@@ -88,6 +89,11 @@ import BillVerificationQueuePage from './pages/acc/BillVerificationQueuePage';
 import DeductionsManagementPage from './pages/acc/DeductionsManagementPage';
 import BudgetMonitoringPage from './pages/acc/BudgetMonitoringPage';
 import ContractorPaymentsPage from './pages/acc/ContractorPaymentsPage';
+import LedgerManagement from './pages/acc/LedgerManagement';
+import VoucherEntry from './pages/acc/VoucherEntry';
+import ContractorStatement from './pages/acc/ContractorStatement';
+import ProjectBudgetReport from './pages/acc/ProjectBudgetReport';
+import TrialBalance from './pages/acc/TrialBalance';
 
 // Contractor — Workspace
 import ContractorProfilePage from './pages/contractor/ContractorProfilePage';
@@ -130,6 +136,7 @@ function App() {
           <Route path="/ce/inspections" element={<InspectionsPage />} />
           <Route path="/ce/approval-history" element={<ApprovalHistoryPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/gis-tracking" element={<ProjectGisTracking />} />
 
           {/* EE — Operations */}
           <Route path="/ee/queue" element={<EEApprovalQueuePage />} />
@@ -153,6 +160,11 @@ function App() {
           <Route path="/acc/deductions" element={<DeductionsManagementPage />} />
           <Route path="/acc/budget" element={<BudgetMonitoringPage />} />
           <Route path="/acc/contractor-payments" element={<ContractorPaymentsPage />} />
+          <Route path="/acc/ledger" element={<LedgerManagement />} />
+          <Route path="/acc/vouchers" element={<VoucherEntry />} />
+          <Route path="/acc/contractor-statement" element={<ContractorStatement />} />
+          <Route path="/acc/project-budgets" element={<ProjectBudgetReport />} />
+          <Route path="/acc/trial-balance" element={<TrialBalance />} />
 
           {/* Contractor — Workspace */}
           <Route path="/contractor/profile" element={<ContractorProfilePage />} />

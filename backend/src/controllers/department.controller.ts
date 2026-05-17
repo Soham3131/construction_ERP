@@ -6,6 +6,7 @@ import User from '../models/User';
 import Project from '../models/Project';
 import OrganizationRegistration from '../models/OrganizationRegistration';
 import { AuthRequest } from '../middleware/auth';
+import { notifyByRole } from '../utils/notify';
 
 // SUPER_ADMIN: list all departments
 export const listDepartments = asyncHandler(async (_req: AuthRequest, res: Response) => {
@@ -46,6 +47,14 @@ export const createDepartment = asyncHandler(async (req: AuthRequest, res: Respo
     billingCycle: 'YEARLY',
     amount: 0,
     modules: dept.enabledModules,
+  });
+
+  await notifyByRole('SUPER_ADMIN', {
+    type: 'DEPARTMENT_CREATED',
+    title: 'Department onboarded',
+    message: `${dept.name} (${dept.code}) was onboarded on the TRIAL plan.`,
+    link: '/admin/departments',
+    meta: { departmentId: dept._id, code: dept.code },
   });
 
   res.status(201).json({ success: true, data: dept });
