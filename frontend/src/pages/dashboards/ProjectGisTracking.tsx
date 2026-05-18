@@ -26,7 +26,7 @@ const ProjectGisTracking: React.FC = () => {
   useEffect(() => {
     const fetchGis = async () => {
       try {
-        const res = await api.get('/api/gis/projects');
+        const res = await api.get('/gis/projects');
         setProjects(res.data.data);
       } catch (err) {
         console.error(err);

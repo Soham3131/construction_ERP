@@ -54,6 +54,11 @@ export interface IUser extends Document {
   panNumber?: string;
   registrationNumber?: string;
   experienceYears?: number;
+  turnover?: number;
+  projectTypes?: string[];
+  preferredDivisions?: mongoose.Types.ObjectId[];
+  pastProjectsCount?: number;
+  performanceRating?: number;
   contractorVerified?: boolean;
   permissions: IPermissions;
   active: boolean;
@@ -112,6 +117,11 @@ const userSchema = new Schema<IUser>(
     panNumber: String,
     registrationNumber: String,
     experienceYears: Number,
+    turnover: Number,
+    projectTypes: [String],
+    preferredDivisions: [{ type: Schema.Types.ObjectId, ref: 'Division' }],
+    pastProjectsCount: { type: Number, default: 0 },
+    performanceRating: Number,
     contractorVerified: { type: Boolean, default: false },
     permissions: { type: permissionsSchema, default: () => ({}) },
     active: { type: Boolean, default: true },

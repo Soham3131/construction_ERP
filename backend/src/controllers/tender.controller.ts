@@ -5,10 +5,27 @@ import Project from '../models/Project';
 import Approval from '../models/Approval';
 import { AuthRequest } from '../middleware/auth';
 import { generateTenderId } from '../utils/generateId';
+import { generateTenderPublishAlerts } from '../utils/notificationService';
 
 // Stage 3: Create tender (only after project SANCTIONED)
 export const createTender = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const { project: projectId } = req.body;
+  const { project: projectId, source = 'INTERNAL', department } = req.body;
+
+  if (source === 'EXTERNAL_PORTAL') {
+    const tender = await Tender.create({
+      tenderId: generateTenderId(),
+      ...req.body,
+      department: department || req.user!.department,
+      createdBy: req.user!._id,
+      status: 'PUBLISHED', // Make external tenders immediately available for tracking
+    });
+    
+    // Asynchronously generate notifications for contractors
+    generateTenderPublishAlerts(tender._id).catch(console.error);
+    
+    return res.status(201).json({ success: true, data: tender });
+  }
+
   const project = await Project.findById(projectId);
   if (!project) { res.status(404); throw new Error('Project not found'); }
   if (project.status !== 'SANCTIONED' && project.status !== 'TENDER_CREATED') {

@@ -47,6 +47,7 @@ import inspectionRoutes from './routes/inspection.routes';
 import materialRequestRoutes from './routes/materialRequest.routes';
 import accountingRoutes from './routes/accountingRoutes';
 import gisRoutes from './routes/gis.routes';
+import intelligenceRoutes from './routes/intelligence.routes';
 
 const app = express();
 
@@ -123,6 +124,7 @@ app.use('/api/daily-progress', dailyProgressRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/accounting', accountingRoutes);
 app.use('/api/gis', gisRoutes);
+app.use('/api/intelligence', intelligenceRoutes);
 
 // Error handlers
 app.use(notFound);

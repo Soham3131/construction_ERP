@@ -8,6 +8,7 @@ import Bill from '../models/Bill';
 import Voucher from '../models/Voucher';
 import Account from '../models/Account';
 import { AuthRequest } from '../middleware/auth';
+import { generateTenderPublishAlerts } from '../utils/notificationService';
 
 const ROLE_TO_STAGE: Record<string, string[]> = {
   JE: ['JE'],
@@ -113,6 +114,9 @@ async function onAllApproved(entityType: string, entityId: string) {
     await Tender.findByIdAndUpdate(entityId, { status: 'PUBLISHED', publishDate: new Date() });
     const t = await Tender.findById(entityId);
     if (t) await Project.findByIdAndUpdate(t.project, { status: 'TENDER_PUBLISHED' });
+    
+    // Asynchronously generate notifications for contractors
+    generateTenderPublishAlerts(entityId).catch(console.error);
   } else if (entityType === 'MB') {
     await MeasurementBook.findByIdAndUpdate(entityId, { status: 'EE_APPROVED', approvedAt: new Date() });
   } else if (entityType === 'BILL') {

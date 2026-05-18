@@ -20,6 +20,7 @@ import TenderListPage from './pages/tender/TenderListPage';
 import NewTenderPage from './pages/tender/NewTenderPage';
 import TenderDetailPage from './pages/tender/TenderDetailPage';
 import PublishedTendersPage from './pages/tender/PublishedTendersPage';
+import TenderIntelligenceDashboard from './pages/tender/TenderIntelligenceDashboard';
 import MyBidsPage from './pages/bid/MyBidsPage';
 import BidEvaluationPage from './pages/bid/BidEvaluationPage';
 import SubmitBidPage from './pages/bid/SubmitBidPage';
@@ -194,6 +195,7 @@ function App() {
           <Route path="/tenders/new" element={<NewTenderPage />} />
           <Route path="/tenders/:id" element={<TenderDetailPage />} />
           <Route path="/tenders/published" element={<PublishedTendersPage />} />
+          <Route path="/tenders/intelligence" element={<TenderIntelligenceDashboard />} />
 
           {/* Stage 5-6 — Bidding */}
           <Route path="/bids" element={<MyBidsPage />} />

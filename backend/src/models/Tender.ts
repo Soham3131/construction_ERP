@@ -23,7 +23,11 @@ export interface ITender extends Document {
   _id: mongoose.Types.ObjectId;
   tenderId: string;
   department: mongoose.Types.ObjectId;
-  project: mongoose.Types.ObjectId;
+  project?: mongoose.Types.ObjectId;
+  division?: mongoose.Types.ObjectId;
+  location?: string;
+  source: 'INTERNAL' | 'EXTERNAL_PORTAL';
+  externalUrl?: string;
   title: string;
   description?: string;
   estimatedCost: number;
@@ -38,6 +42,9 @@ export interface ITender extends Document {
   documents: { name: string; url: string; publicId?: string }[];
   technicalSpecs?: string;
   eligibilityCriteria?: string;
+  minTurnover?: number;
+  minExperienceYears?: number;
+  projectCategories?: string[];
   createdBy: mongoose.Types.ObjectId;
   approvals: mongoose.Types.ObjectId[];
   bids: mongoose.Types.ObjectId[];
@@ -65,7 +72,11 @@ const tenderSchema = new Schema<ITender>(
   {
     tenderId: { type: String, unique: true, required: true, index: true },
     department: { type: Schema.Types.ObjectId, ref: 'Department', required: true, index: true },
-    project: { type: Schema.Types.ObjectId, ref: 'Project', required: true },
+    project: { type: Schema.Types.ObjectId, ref: 'Project' },
+    division: { type: Schema.Types.ObjectId, ref: 'Division', index: true },
+    location: String,
+    source: { type: String, enum: ['INTERNAL', 'EXTERNAL_PORTAL'], default: 'INTERNAL' },
+    externalUrl: String,
     title: { type: String, required: true },
     description: String,
     estimatedCost: { type: Number, required: true, min: 0 },
@@ -90,6 +101,9 @@ const tenderSchema = new Schema<ITender>(
     ],
     technicalSpecs: String,
     eligibilityCriteria: String,
+    minTurnover: Number,
+    minExperienceYears: Number,
+    projectCategories: [String],
     createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     approvals: [{ type: Schema.Types.ObjectId, ref: 'Approval' }],
     bids: [{ type: Schema.Types.ObjectId, ref: 'Bid' }],

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../api/client';
 import PageHeader from './../components/shared/PageHeader';
 import { formatDateTime } from '../utils/format';
-import { Bell, CheckCircle2, Inbox, Trash2 } from 'lucide-react';
+import { Bell, CheckCircle2, Inbox, Trash2, Sparkles, Target } from 'lucide-react';
 
 export default function NotificationsPage() {
   const [items, setItems] = useState<any[]>([]);
@@ -73,9 +73,14 @@ export default function NotificationsPage() {
             <div key={n._id} className={`card-gov p-4 transition ${n.read ? 'opacity-70' : 'border-l-4 border-l-govt-navy'}`}>
               <div className="flex items-start gap-3">
                 <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                  n.read ? 'bg-slate-100 text-slate-500' : 'bg-govt-navy/10 text-govt-navy'
+                  n.read ? 'bg-slate-100 text-slate-500' : 
+                  n.type === 'TENDER_ELIGIBLE' ? 'bg-green-100 text-green-700' :
+                  n.type === 'TENDER_DIVISION' ? 'bg-amber-100 text-amber-700' :
+                  'bg-govt-navy/10 text-govt-navy'
                 }`}>
-                  <Bell className="w-4 h-4" />
+                  {n.type === 'TENDER_ELIGIBLE' ? <Sparkles className="w-4 h-4" /> : 
+                   n.type === 'TENDER_DIVISION' ? <Target className="w-4 h-4" /> : 
+                   <Bell className="w-4 h-4" />}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
