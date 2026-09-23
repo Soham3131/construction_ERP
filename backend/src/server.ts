@@ -6,6 +6,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
+import mongoose from 'mongoose';
 
 import connectDB from './config/db';
 import { notFound, errorHandler } from './middleware/errorHandler';
@@ -136,7 +137,12 @@ app.get('/', (_req: Request, res: Response) => {
   });
 });
 app.get('/api/health', (_req: Request, res: Response) =>
-  res.json({ success: true, status: 'OK', timestamp: new Date().toISOString() })
+  res.json({
+    success: true,
+    status: 'OK',
+    dbState: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    timestamp: new Date().toISOString(),
+  })
 );
 
 // API Routes — 12 stages of the workflow
