@@ -80,12 +80,21 @@ const seed = async () => {
   ];
 
   for (const u of seedData) {
-    const exists = await User.findOne({ email: u.email });
+    const normalizedEmail = u.email.toLowerCase().trim();
+    const exists = await User.findOne({ email: normalizedEmail });
     if (!exists) {
-      await User.create(u);
-      console.log(`✔ ${u.role.padEnd(13)} ${u.email.padEnd(28)} / ${u.password}`);
+      try {
+        await User.create({ ...u, email: normalizedEmail });
+        console.log(`✔ ${u.role.padEnd(13)} ${normalizedEmail.padEnd(28)} / ${u.password}`);
+      } catch (err: any) {
+        if (err.code === 11000) {
+          console.log(`= ${u.role.padEnd(13)} ${normalizedEmail.padEnd(28)} already exists`);
+        } else {
+          throw err;
+        }
+      }
     } else {
-      console.log(`= ${u.role.padEnd(13)} ${u.email.padEnd(28)} already exists`);
+      console.log(`= ${u.role.padEnd(13)} ${normalizedEmail.padEnd(28)} already exists`);
     }
   }
 
