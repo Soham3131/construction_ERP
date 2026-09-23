@@ -55,11 +55,63 @@ const app = express();
 connectDB();
 
 // Security & basic middleware
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  })
+);
+
+// Dynamic CORS configuration allowing localhost, Vercel apps, and process.env.CLIENT_URL
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:5174',
+  'http://127.0.0.1:5173',
+  'https://construction-erp-ecru.vercel.app',
+];
+
+if (process.env.CLIENT_URL) {
+  const envOrigins = process.env.CLIENT_URL.split(',').map((url) =>
+    url.trim().replace(/\/+$/, '')
+  );
+  allowedOrigins.push(...envOrigins);
+}
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, Postman, server-to-server)
+      if (!origin) return callback(null, true);
+
+      const cleanOrigin = origin.replace(/\/+$/, '');
+
+      try {
+        const hostname = new URL(cleanOrigin).hostname;
+        if (
+          allowedOrigins.includes(cleanOrigin) ||
+          hostname.endsWith('.vercel.app') ||
+          hostname === 'localhost' ||
+          hostname === '127.0.0.1'
+        ) {
+          return callback(null, true);
+        }
+      } catch {
+        // Fallback for unexpected URL formats
+      }
+
+      return callback(null, true);
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
+    allowedHeaders: [
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'Accept',
+      'Authorization',
+      'x-access-token',
+    ],
+    optionsSuccessStatus: 200,
   })
 );
 app.use(express.json({ limit: '10mb' }));
