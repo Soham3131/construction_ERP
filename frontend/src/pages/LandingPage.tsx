@@ -57,7 +57,7 @@ function StageImageVisual({
   const [imageError, setImageError] = useState(false);
 
   return (
-    <div className="relative w-full h-44 sm:h-60 lg:h-64 bg-gradient-to-br from-slate-950 via-govt-navy-dark to-slate-900 overflow-hidden flex items-center justify-center group rounded-xl">
+    <div className="relative w-full h-36 sm:h-56 lg:h-64 bg-gradient-to-br from-slate-950 via-govt-navy-dark to-slate-900 overflow-hidden flex items-center justify-center group rounded-xl">
       {/* Background Graphic Grid */}
       <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]" />
 
@@ -69,36 +69,33 @@ function StageImageVisual({
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-85"
         />
       ) : (
-        /* Sleek Blueprint Fallback UI — NO duplicate title text */
-        <div className="relative z-10 p-4 text-center flex flex-col items-center justify-center space-y-2">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center shadow-lg animate-float">
-            <FallbackIcon className="w-6 h-6 sm:w-8 sm:h-8 text-amber-400" />
+        /* Sleek Minimalist Blueprint Fallback UI — NO text collision */
+        <div className="relative z-10 -mt-5 text-center flex flex-col items-center justify-center space-y-1">
+          <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center shadow-lg animate-float">
+            <FallbackIcon className="w-5 h-5 sm:w-7 sm:h-7 text-amber-400" />
           </div>
-          <div>
-            <div className="text-[10px] sm:text-xs font-bold text-amber-300 uppercase tracking-widest">Stage {stageId} Blueprint</div>
-            <div className="text-[11px] sm:text-xs text-slate-300 max-w-xs mx-auto">
-              Automated 12-Stage Verified Governance
-            </div>
+          <div className="text-[10px] sm:text-xs font-bold text-amber-300 uppercase tracking-widest">
+            Stage {stageId} Blueprint
           </div>
         </div>
       )}
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent pointer-events-none" />
+      {/* Dark Gradient Overlay for High Contrast */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent pointer-events-none" />
 
       {/* Clean Bottom Overlay Bar */}
-      <div className="absolute bottom-2.5 left-3 right-3 text-white z-10 pointer-events-none">
-        <div className="flex items-center gap-1.5 mb-0.5">
+      <div className="absolute bottom-2 left-2.5 right-2.5 text-white z-10 pointer-events-none space-y-0.5">
+        <div className="flex items-center gap-1.5">
           <span className="bg-amber-400 text-slate-950 font-extrabold text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded uppercase tracking-wider">
             STAGE {stageId} OF 12
           </span>
-          <span className="text-[10px] font-semibold text-emerald-400 flex items-center gap-1">
+          <span className="text-[9px] sm:text-[10px] font-semibold text-emerald-400 flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             Verified
           </span>
         </div>
-        <div className="text-xs sm:text-base font-bold font-gov text-white truncate">{title}</div>
-        <div className="text-[10px] sm:text-xs text-slate-300 truncate">
+        <div className="text-xs sm:text-base font-bold font-gov text-white truncate leading-tight">{title}</div>
+        <div className="text-[9px] sm:text-xs text-slate-300 truncate">
           Role: <strong className="text-white font-medium">{role}</strong>
         </div>
       </div>
@@ -513,88 +510,87 @@ export default function LandingPage() {
       </header>
 
       {/* ULTRA-ANIMATED HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-govt-navy-dark to-slate-900 text-white pt-10 pb-20 lg:pt-16 lg:pb-32">
+      <section className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-govt-navy-dark to-slate-900 text-white pt-6 pb-12 sm:pt-14 sm:pb-28">
         
         {/* Dynamic Animated Ambient Background Blobs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/20 rounded-full blur-[120px] pointer-events-none animate-pulse-glow" />
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[120px] pointer-events-none animate-float-alt" />
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-[600px] h-64 bg-emerald-500/15 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/4 left-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-amber-500/15 rounded-full blur-[100px] sm:blur-[120px] pointer-events-none animate-pulse-glow" />
+        <div className="absolute top-1/3 right-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-blue-500/15 rounded-full blur-[100px] sm:blur-[120px] pointer-events-none animate-float-alt" />
 
         {/* High-Tech Blueprint Grid overlay */}
         <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             {/* Left Column: Hero Text with Cycler & CTAs */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+            <div className="lg:col-span-7 space-y-4 sm:space-y-6 text-center lg:text-left">
               
-              {/* Live Status Pill with Glowing Radar Pulse */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur border border-white/20 text-xs font-semibold text-amber-300 shadow-xl">
-                <span className="relative flex h-2.5 w-2.5">
+              {/* Live Status Pill */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur border border-white/20 text-[11px] sm:text-xs font-semibold text-amber-300 shadow-xl">
+                <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
-                <span>Next-Gen Civil Infrastructure & e-Tendering OS</span>
+                <span>Next-Gen e-Tendering & Civil ERP</span>
               </div>
 
               {/* Dynamic Headline with Animated Cycler */}
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight font-gov">
+              <h1 className="text-2xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight leading-snug sm:leading-tight font-gov">
                 Transform Public Works with <br />
                 <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-200 to-emerald-400 transition-all duration-500 min-h-[1.2em]">
                   {headlines[headlineIndex]}
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                The complete digital Operating System for PWD, CPWD, NHAI, Smart Cities & Infrastructure Enterprises. Digitise proposals, multi-tier approvals, e-Tendering, digital Measurement Books (e-MB), and RTGS payments in one audit-ready platform.
+              <p className="text-xs sm:text-base text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                The complete digital Operating System for PWD, CPWD & NHAI. Digitise e-Tendering, digital Measurement Books (e-MB), and RTGS payments in one CVC compliant platform.
               </p>
 
               {/* Primary Action Button */}
-              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <div className="pt-1 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4">
                 <button
                   onClick={() => setDemoModalOpen(true)}
-                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-extrabold rounded-xl shadow-xl shadow-amber-500/25 transition-all duration-300 hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3 text-base"
+                  className="w-full sm:w-auto px-6 sm:px-8 py-3.5 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-extrabold rounded-xl shadow-xl shadow-amber-500/20 transition-all duration-300 hover:-translate-y-0.5 active:scale-95 flex items-center justify-center gap-2.5 text-sm sm:text-base"
                 >
-                  <Sparkles className="w-5 h-5 text-slate-950 animate-pulse" />
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-slate-950 animate-pulse" />
                   Explore System Live Demo
                 </button>
 
                 <a
                   href="#workflow"
-                  className="w-full sm:w-auto px-6 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl border border-white/30 backdrop-blur transition-all duration-200 flex items-center justify-center gap-2 text-base"
+                  className="w-full sm:w-auto px-5 sm:px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl border border-white/30 backdrop-blur transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
                   Explore 12 Stages →
                 </a>
               </div>
 
               {/* Live Interactive Hero Stats Counters */}
-              <div className="pt-8 border-t border-white/10 grid grid-cols-3 gap-3 text-left">
-                <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur hover:bg-white/10 transition-colors">
-                  <div className="flex items-center gap-1.5 text-amber-400 mb-1">
-                    <TrendingUp className="w-4 h-4" />
-                    <span className="text-xs font-bold">Processed</span>
+              <div className="pt-4 sm:pt-6 border-t border-white/10 grid grid-cols-3 gap-2 sm:gap-3 text-left">
+                <div className="p-2 sm:p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur">
+                  <div className="flex items-center gap-1 text-amber-400 mb-0.5">
+                    <TrendingUp className="w-3.5 h-3.5" />
+                    <span className="text-[10px] sm:text-xs font-bold">Processed</span>
                   </div>
-                  <div className="text-base sm:text-xl font-extrabold text-white font-gov whitespace-nowrap">₹8,500+ Cr</div>
-                  <div className="text-[10px] text-slate-400">Total Project Value</div>
+                  <div className="text-xs sm:text-xl font-extrabold text-white font-gov whitespace-nowrap">₹8,500+ Cr</div>
+                  <div className="text-[9px] sm:text-[10px] text-slate-400 truncate">Total Value</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur hover:bg-white/10 transition-colors">
-                  <div className="flex items-center gap-1.5 text-emerald-400 mb-1">
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span className="text-xs font-bold">Accuracy</span>
+                <div className="p-2 sm:p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur">
+                  <div className="flex items-center gap-1 text-emerald-400 mb-0.5">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span className="text-[10px] sm:text-xs font-bold">Accuracy</span>
                   </div>
-                  <div className="text-base sm:text-xl font-extrabold text-white font-gov whitespace-nowrap">100% e-MB</div>
-                  <div className="text-[10px] text-slate-400">Zero Ghost Billing</div>
+                  <div className="text-xs sm:text-xl font-extrabold text-white font-gov whitespace-nowrap">100% e-MB</div>
+                  <div className="text-[9px] sm:text-[10px] text-slate-400 truncate">Zero Ghost Billing</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur hover:bg-white/10 transition-colors">
-                  <div className="flex items-center gap-1.5 text-purple-400 mb-1">
-                    <Activity className="w-4 h-4" />
-                    <span className="text-xs font-bold">Compliance</span>
+                <div className="p-2 sm:p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur">
+                  <div className="flex items-center gap-1 text-purple-400 mb-0.5">
+                    <Activity className="w-3.5 h-3.5" />
+                    <span className="text-[10px] sm:text-xs font-bold">Compliance</span>
                   </div>
-                  <div className="text-base sm:text-xl font-extrabold text-white font-gov whitespace-nowrap">CVC Ready</div>
-                  <div className="text-[10px] text-slate-400">CAG Audit Passed</div>
+                  <div className="text-xs sm:text-xl font-extrabold text-white font-gov whitespace-nowrap">CVC Ready</div>
+                  <div className="text-[9px] sm:text-[10px] text-slate-400 truncate">CAG Passed</div>
                 </div>
               </div>
 
