@@ -38,7 +38,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 
-// Stage Visual Fallback Component — Ensures no broken image alt text ever renders
+// Stage Visual Component — Renders clean visual graphic without duplicate text collision
 function StageImageVisual({
   src,
   alt,
@@ -57,7 +57,7 @@ function StageImageVisual({
   const [imageError, setImageError] = useState(false);
 
   return (
-    <div className="relative w-full h-full min-h-[300px] lg:min-h-[360px] bg-gradient-to-br from-slate-900 via-govt-navy-dark to-slate-950 overflow-hidden flex items-center justify-center group">
+    <div className="relative w-full h-44 sm:h-60 lg:h-64 bg-gradient-to-br from-slate-950 via-govt-navy-dark to-slate-900 overflow-hidden flex items-center justify-center group rounded-xl">
       {/* Background Graphic Grid */}
       <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]" />
 
@@ -66,19 +66,18 @@ function StageImageVisual({
           src={src}
           alt={alt}
           onError={() => setImageError(true)}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-85"
         />
       ) : (
-        /* Vector Fallback UI when remote image fails to load */
-        <div className="relative z-10 p-8 text-center flex flex-col items-center justify-center space-y-4">
-          <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center shadow-xl animate-float">
-            <FallbackIcon className="w-10 h-10 text-amber-400" />
+        /* Sleek Blueprint Fallback UI — NO duplicate title text */
+        <div className="relative z-10 p-4 text-center flex flex-col items-center justify-center space-y-2">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center shadow-lg animate-float">
+            <FallbackIcon className="w-6 h-6 sm:w-8 sm:h-8 text-amber-400" />
           </div>
           <div>
-            <div className="text-xs font-bold text-amber-300 uppercase tracking-widest">Digital Stage {stageId} Blueprint</div>
-            <div className="text-xl font-extrabold text-white font-gov mt-1">{title}</div>
-            <div className="text-xs text-slate-300 mt-2 max-w-xs mx-auto">
-              Automated 12-Stage Verified Governance Module
+            <div className="text-[10px] sm:text-xs font-bold text-amber-300 uppercase tracking-widest">Stage {stageId} Blueprint</div>
+            <div className="text-[11px] sm:text-xs text-slate-300 max-w-xs mx-auto">
+              Automated 12-Stage Verified Governance
             </div>
           </div>
         </div>
@@ -87,21 +86,20 @@ function StageImageVisual({
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent pointer-events-none" />
 
-      {/* Stage Badge overlay */}
-      <div className="absolute bottom-4 left-4 right-4 text-white z-10">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="bg-amber-400 text-slate-950 font-extrabold text-[10px] px-2 py-0.5 rounded uppercase tracking-wider">
+      {/* Clean Bottom Overlay Bar */}
+      <div className="absolute bottom-2.5 left-3 right-3 text-white z-10 pointer-events-none">
+        <div className="flex items-center gap-1.5 mb-0.5">
+          <span className="bg-amber-400 text-slate-950 font-extrabold text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded uppercase tracking-wider">
             STAGE {stageId} OF 12
           </span>
-          <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1">
+          <span className="text-[10px] font-semibold text-emerald-400 flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Verified Module
+            Verified
           </span>
         </div>
-        <div className="text-xl font-bold font-gov text-white truncate">{title}</div>
-        <div className="text-xs text-slate-300 mt-1 flex items-center gap-1.5 truncate">
-          <Users className="w-3.5 h-3.5 text-amber-300 flex-shrink-0" />
-          <span>Primary Role: <strong className="text-white">{role}</strong></span>
+        <div className="text-xs sm:text-base font-bold font-gov text-white truncate">{title}</div>
+        <div className="text-[10px] sm:text-xs text-slate-300 truncate">
+          Role: <strong className="text-white font-medium">{role}</strong>
         </div>
       </div>
     </div>
@@ -649,7 +647,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Animated Project Image Container */}
-                <div className="relative h-64 sm:h-72 rounded-xl overflow-hidden group">
+                <div className="relative rounded-xl overflow-hidden group">
                   <StageImageVisual
                     src={currProj.img}
                     alt={currProj.title}
@@ -660,12 +658,12 @@ export default function LandingPage() {
                   />
 
                   {/* Top Floating Badge Overlay */}
-                  <div className="absolute top-3 left-3 bg-slate-900/90 backdrop-blur text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-slate-700 flex items-center gap-1.5 shadow z-20">
-                    <span className={`w-2 h-2 rounded-full ${currProj.badgeColor} animate-pulse`} />
-                    <span>{currProj.stage}</span>
+                  <div className="absolute top-2.5 left-2.5 max-w-[55%] bg-slate-900/90 backdrop-blur text-white text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-lg border border-slate-700 flex items-center gap-1.5 shadow z-20 truncate">
+                    <span className={`w-1.5 h-1.5 rounded-full ${currProj.badgeColor} animate-pulse flex-shrink-0`} />
+                    <span className="truncate">{currProj.stage}</span>
                   </div>
 
-                  <div className="absolute top-3 right-3 bg-amber-400 text-slate-950 text-[11px] font-extrabold px-2.5 py-1 rounded-lg shadow z-20">
+                  <div className="absolute top-2.5 right-2.5 bg-amber-400 text-slate-950 text-[10px] sm:text-[11px] font-extrabold px-2 py-0.5 rounded-lg shadow z-20">
                     {currProj.budget}
                   </div>
                 </div>
@@ -711,22 +709,22 @@ export default function LandingPage() {
           <p className="text-center text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">
             Built strictly in accordance with official public procurement standards
           </p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center gap-2.5 transition-all hover:bg-white hover:shadow-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-center">
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center gap-2.5 transition-all hover:bg-white hover:shadow-sm">
               <ShieldCheck className="w-5 h-5 text-govt-navy flex-shrink-0" />
-              <span className="text-xs font-bold text-slate-800 whitespace-nowrap">CVC Guideline Compliant</span>
+              <span className="text-xs font-bold text-slate-800">CVC Guideline Compliant</span>
             </div>
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center gap-2.5 transition-all hover:bg-white hover:shadow-sm">
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center gap-2.5 transition-all hover:bg-white hover:shadow-sm">
               <Lock className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-              <span className="text-xs font-bold text-slate-800 whitespace-nowrap">Dual-Cover Encrypted Bids</span>
+              <span className="text-xs font-bold text-slate-800">Dual-Cover Encrypted Bids</span>
             </div>
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center gap-2.5 transition-all hover:bg-white hover:shadow-sm">
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center gap-2.5 transition-all hover:bg-white hover:shadow-sm">
               <FileSpreadsheet className="w-5 h-5 text-amber-600 flex-shrink-0" />
-              <span className="text-xs font-bold text-slate-800 whitespace-nowrap">Digital e-MB Verification</span>
+              <span className="text-xs font-bold text-slate-800">Digital e-MB Verification</span>
             </div>
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center gap-2.5 transition-all hover:bg-white hover:shadow-sm">
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center gap-2.5 transition-all hover:bg-white hover:shadow-sm">
               <Scale className="w-5 h-5 text-purple-600 flex-shrink-0" />
-              <span className="text-xs font-bold text-slate-800 whitespace-nowrap">100% CAG Audit Ready</span>
+              <span className="text-xs font-bold text-slate-800">100% CAG Audit Ready</span>
             </div>
           </div>
         </div>
