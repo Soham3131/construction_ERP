@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import {
@@ -29,7 +29,13 @@ import {
   Landmark,
   Compass,
   Briefcase,
-  Layers2
+  Layers2,
+  Play,
+  Activity,
+  Zap,
+  TrendingUp,
+  Check,
+  RefreshCw
 } from 'lucide-react';
 
 // Stage Visual Fallback Component — Ensures no broken image alt text ever renders
@@ -108,9 +114,65 @@ export default function LandingPage() {
   const [activeRole, setActiveRole] = useState('CE');
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [demoModalOpen, setDemoModalOpen] = useState(false);
-  const stageNavRef = useRef<HTMLDivElement>(null);
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  
+  // Hero Cycling Headline Index
+  const [headlineIndex, setHeadlineIndex] = useState(0);
+  const headlines = [
+    'Automated 12-Stage Governance',
+    'Zero Ghost Billing e-MB Digital Books',
+    'Dual-Cover Encrypted eTendering',
+    '100% CVC & CAG Audit Readiness'
+  ];
 
+  // Hero Interactive Project Switcher
+  const [activeHeroProject, setActiveHeroProject] = useState(0);
+  const heroProjects = [
+    {
+      title: '4-Lane Highway Bypass & Flyover Bridge',
+      ref: '#PWD-2026-8902',
+      budget: '₹48.5 Cr',
+      stage: 'Stage 8: Execution',
+      progress: 78,
+      mbStatus: '₹12.4 Cr Approved',
+      billStatus: 'RA-03 Released (UTR #99014)',
+      img: 'https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?auto=format&fit=crop&w=1200&q=80',
+      badgeColor: 'bg-emerald-500'
+    },
+    {
+      title: '500-Bed Govt Medical College Complex',
+      ref: '#CPWD-2026-4019',
+      budget: '₹120.0 Cr',
+      stage: 'Stage 6: Bid Evaluation (Auto-L1)',
+      progress: 42,
+      mbStatus: 'Pre-Qualification Passed',
+      billStatus: 'Auto-L1 Identified (₹112.5 Cr)',
+      img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
+      badgeColor: 'bg-amber-500'
+    },
+    {
+      title: 'Smart City Urban Drainage & Pipeline',
+      ref: '#NHAI-2026-1104',
+      budget: '₹32.8 Cr',
+      stage: 'Stage 11: Treasury Disbursal',
+      progress: 95,
+      mbStatus: 'Final e-MB Verification',
+      billStatus: 'RTGS Disbursement Completed',
+      img: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
+      badgeColor: 'bg-cyan-500'
+    }
+  ];
+
+  const stageNavRef = useRef<HTMLDivElement>(null);
   const { isAuthenticated } = useAuthStore();
+
+  // Automatic headline rotator
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeadlineIndex((prev) => (prev + 1) % headlines.length);
+    }, 3200);
+    return () => clearInterval(timer);
+  }, [headlines.length]);
 
   // Quick Demo Accounts
   const demoUsers = [
@@ -123,7 +185,7 @@ export default function LandingPage() {
     { role: 'Accountant', email: 'accounts@erp.gov.in', pass: 'pass@123', badge: 'Bill Audit & Tax Deductions', icon: Calculator, color: 'bg-cyan-600' },
   ];
 
-  // 12-Stage Workflow Data with guaranteed relevant construction images + vector icons
+  // 12-Stage Workflow Data
   const stages = [
     {
       id: 1,
@@ -312,6 +374,8 @@ export default function LandingPage() {
     }
   };
 
+  const currProj = heroProjects[activeHeroProject];
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800 flex flex-col overflow-x-hidden">
       {/* Top Govt Tricolor Accent Strip */}
@@ -337,7 +401,7 @@ export default function LandingPage() {
             </div>
           </Link>
 
-          {/* Desktop Nav Links (Hidden on < xl to prevent wrapping overflow) */}
+          {/* Desktop Nav Links */}
           <nav className="hidden xl:flex items-center gap-6 text-sm font-medium text-slate-600 whitespace-nowrap">
             <a href="#features" className="hover:text-govt-navy transition-colors duration-200 py-1">Key Features</a>
             <a href="#workflow" className="hover:text-govt-navy transition-colors duration-200 py-1">12-Stage Workflow</a>
@@ -451,25 +515,37 @@ export default function LandingPage() {
         )}
       </header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-govt-navy-dark to-govt-navy text-white pt-10 pb-16 lg:pt-16 lg:pb-28">
-        {/* Background Grid Accent */}
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+      {/* ULTRA-ANIMATED HERO SECTION */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-govt-navy-dark to-slate-900 text-white pt-10 pb-20 lg:pt-16 lg:pb-32">
+        
+        {/* Dynamic Animated Ambient Background Blobs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/20 rounded-full blur-[120px] pointer-events-none animate-pulse-glow" />
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[120px] pointer-events-none animate-float-alt" />
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-[600px] h-64 bg-emerald-500/15 rounded-full blur-[140px] pointer-events-none" />
+
+        {/* High-Tech Blueprint Grid overlay */}
+        <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
-            {/* Left Column: Hero Text & Call to Actions */}
+            {/* Left Column: Hero Text with Cycler & CTAs */}
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur border border-white/20 text-xs font-semibold text-amber-300 shadow-inner">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>End-to-End Civil Infrastructure & Public e-Tendering ERP</span>
+              
+              {/* Live Status Pill with Glowing Radar Pulse */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur border border-white/20 text-xs font-semibold text-amber-300 shadow-xl">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                </span>
+                <span>Next-Gen Civil Infrastructure & e-Tendering OS</span>
               </div>
 
+              {/* Dynamic Headline with Animated Cycler */}
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight font-gov">
                 Transform Public Works with <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-200 to-emerald-400">
-                  Automated 12-Stage Governance
+                <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-200 to-emerald-400 transition-all duration-500 min-h-[1.2em]">
+                  {headlines[headlineIndex]}
                 </span>
               </h1>
 
@@ -477,99 +553,158 @@ export default function LandingPage() {
                 The complete digital Operating System for PWD, CPWD, NHAI, Smart Cities & Infrastructure Enterprises. Digitise proposals, multi-tier approvals, e-Tendering, digital Measurement Books (e-MB), and RTGS payments in one audit-ready platform.
               </p>
 
+              {/* Primary Buttons & Overview Video Trigger */}
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 <button
                   onClick={() => setDemoModalOpen(true)}
-                  className="w-full sm:w-auto px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/25 transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-3 text-base"
+                  className="w-full sm:w-auto px-7 py-4 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold rounded-xl shadow-xl shadow-amber-500/25 transition-all duration-300 hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3 text-base"
                 >
-                  <Sparkles className="w-5 h-5 text-slate-950 animate-spin-slow" />
+                  <Sparkles className="w-5 h-5 text-slate-950 animate-pulse" />
                   Explore System Live Demo
                 </button>
 
-                <Link
-                  to="/login"
-                  className="w-full sm:w-auto px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl border border-white/30 backdrop-blur transition-all duration-200 flex items-center justify-center gap-2 text-base"
+                <button
+                  onClick={() => setVideoModalOpen(true)}
+                  className="w-full sm:w-auto px-6 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl border border-white/30 backdrop-blur transition-all duration-200 flex items-center justify-center gap-3 text-base group"
                 >
-                  <Lock className="w-4 h-4 text-slate-300" />
-                  Department Login
-                </Link>
+                  <div className="w-7 h-7 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Play className="w-3.5 h-3.5 text-amber-300 fill-amber-300 ml-0.5" />
+                  </div>
+                  <span>Watch 60s Video</span>
+                </button>
               </div>
 
-              {/* Key Highlights Pill Badges */}
-              <div className="pt-6 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
-                <div className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/10 backdrop-blur">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold flex-shrink-0">
-                    ✓
+              {/* Live Interactive Hero Stats Counters */}
+              <div className="pt-8 border-t border-white/10 grid grid-cols-3 gap-3 text-left">
+                <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur hover:bg-white/10 transition-colors">
+                  <div className="flex items-center gap-1.5 text-amber-400 mb-1">
+                    <TrendingUp className="w-4 h-4" />
+                    <span className="text-xs font-bold">Processed</span>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-white whitespace-nowrap">Auto L1 Detection</div>
-                    <div className="text-[11px] text-slate-300">Dual-cover bidding</div>
-                  </div>
+                  <div className="text-base sm:text-xl font-extrabold text-white font-gov whitespace-nowrap">₹8,500+ Cr</div>
+                  <div className="text-[10px] text-slate-400">Total Project Value</div>
                 </div>
 
-                <div className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/10 backdrop-blur">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold flex-shrink-0">
-                    ✓
+                <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur hover:bg-white/10 transition-colors">
+                  <div className="flex items-center gap-1.5 text-emerald-400 mb-1">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span className="text-xs font-bold">Accuracy</span>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-white whitespace-nowrap">Digital MB Book</div>
-                    <div className="text-[11px] text-slate-300">Zero ghost billing</div>
-                  </div>
+                  <div className="text-base sm:text-xl font-extrabold text-white font-gov whitespace-nowrap">100% e-MB</div>
+                  <div className="text-[10px] text-slate-400">Zero Ghost Billing</div>
                 </div>
 
-                <div className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/10 backdrop-blur">
-                  <div className="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold flex-shrink-0">
-                    ✓
+                <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur hover:bg-white/10 transition-colors">
+                  <div className="flex items-center gap-1.5 text-purple-400 mb-1">
+                    <Activity className="w-4 h-4" />
+                    <span className="text-xs font-bold">Compliance</span>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-white whitespace-nowrap">100% Audit Ready</div>
-                    <div className="text-[11px] text-slate-300">CVC & CAG compliant</div>
-                  </div>
+                  <div className="text-base sm:text-xl font-extrabold text-white font-gov whitespace-nowrap">CVC Ready</div>
+                  <div className="text-[10px] text-slate-400">CAG Audit Passed</div>
                 </div>
               </div>
+
             </div>
 
-            {/* Right Column: High-Impact Visual Mockup Container */}
+            {/* Right Column: INTERACTIVE ANIMATED HERO WIDGET */}
             <div className="lg:col-span-5 relative">
-              {/* Glass Card Container */}
-              <div className="relative rounded-2xl overflow-hidden border border-white/20 bg-slate-800/90 backdrop-blur shadow-2xl p-3 sm:p-4 transition-all duration-300 hover:border-white/40">
-                {/* Stage Image with Fallback UI */}
-                <div className="relative h-64 sm:h-80 rounded-xl overflow-hidden group">
+              
+              {/* Floating Animated Badge 1 (Top Left) */}
+              <div className="absolute -top-5 -left-5 z-30 bg-slate-900/90 backdrop-blur border border-emerald-500/40 text-white p-3 rounded-xl shadow-2xl animate-float hidden sm:flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                  <Check className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-[11px] font-bold text-white">4-Tier Approval Chain</div>
+                  <div className="text-[10px] text-emerald-400 flex items-center gap-1">
+                    <span>JE ➔ SDO ➔ EE ➔ CE</span>
+                    <span className="font-bold text-amber-300">✓ Sanctioned</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating Animated Badge 2 (Bottom Right) */}
+              <div className="absolute -bottom-6 -right-4 z-30 bg-slate-900/90 backdrop-blur border border-amber-500/40 text-white p-3 rounded-xl shadow-2xl animate-float-alt hidden sm:flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+                  <Zap className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-[11px] font-bold text-white">Auto-L1 Evaluation</div>
+                  <div className="text-[10px] text-amber-300 font-mono">14 Sealed Bids Scored</div>
+                </div>
+              </div>
+
+              {/* Main Interactive Project Showcase Card */}
+              <div className="relative rounded-2xl overflow-hidden border border-white/20 bg-slate-900/90 backdrop-blur shadow-2xl p-4 transition-all duration-500 hover:border-amber-400/40">
+                
+                {/* Hero Interactive Project Selector Tabs */}
+                <div className="flex items-center justify-between gap-1 mb-3 bg-slate-950/80 p-1 rounded-xl border border-slate-800">
+                  {heroProjects.map((p, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveHeroProject(i)}
+                      className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] sm:text-xs font-bold transition-all ${
+                        activeHeroProject === i
+                          ? 'bg-amber-400 text-slate-950 shadow-md'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      Project {i + 1}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Animated Project Image Container */}
+                <div className="relative h-64 sm:h-72 rounded-xl overflow-hidden group">
                   <StageImageVisual
-                    src="https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?auto=format&fit=crop&w=1200&q=80"
-                    alt="Infrastructure Construction Site"
-                    title="4-Lane Highway Bypass & Flyover Bridge"
+                    src={currProj.img}
+                    alt={currProj.title}
+                    title={currProj.title}
                     stageId={8}
                     role="Junior Engineer & Site Officer"
                     fallbackIcon={HardHat}
                   />
 
-                  {/* Overlay Badges */}
-                  <div className="absolute top-3 left-3 bg-slate-900/90 backdrop-blur text-white text-[11px] font-semibold px-2.5 py-1 rounded-md border border-slate-700 flex items-center gap-1.5 shadow z-20">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Live Stage 8: Construction Execution</span>
+                  {/* Top Floating Badge Overlay */}
+                  <div className="absolute top-3 left-3 bg-slate-900/90 backdrop-blur text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-slate-700 flex items-center gap-1.5 shadow z-20">
+                    <span className={`w-2 h-2 rounded-full ${currProj.badgeColor} animate-pulse`} />
+                    <span>{currProj.stage}</span>
+                  </div>
+
+                  <div className="absolute top-3 right-3 bg-amber-400 text-slate-950 text-[11px] font-extrabold px-2.5 py-1 rounded-lg shadow z-20">
+                    {currProj.budget}
+                  </div>
+                </div>
+
+                {/* Live Milestone Progress Bar */}
+                <div className="mt-4 bg-slate-950/80 p-3 rounded-xl border border-slate-800 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-400 font-medium">Physical Milestone Progress</span>
+                    <span className="text-emerald-400 font-bold font-mono">{currProj.progress}% Completed</span>
+                  </div>
+                  <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-amber-400 via-emerald-400 to-emerald-500 rounded-full transition-all duration-700"
+                      style={{ width: `${currProj.progress}%` }}
+                    />
                   </div>
                 </div>
 
                 {/* Floating Metrics Widgets */}
                 <div className="mt-3 grid grid-cols-2 gap-3">
-                  <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-700/80 hover:border-emerald-500/50 transition-colors">
-                    <div className="text-[11px] text-slate-400 font-medium">Measurement Book (e-MB)</div>
-                    <div className="text-sm sm:text-base font-bold text-emerald-400 mt-0.5">₹12.4 Cr Approved</div>
-                    <div className="text-[10px] text-slate-400 mt-0.5">JE → SDO → EE Verified</div>
+                  <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+                    <div className="text-[10px] text-slate-400 font-medium">Measurement Book (e-MB)</div>
+                    <div className="text-xs sm:text-sm font-bold text-emerald-400 mt-0.5">{currProj.mbStatus}</div>
                   </div>
 
-                  <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-700/80 hover:border-amber-500/50 transition-colors">
-                    <div className="text-[11px] text-slate-400 font-medium">RA Bill Disbursal</div>
-                    <div className="text-sm sm:text-base font-bold text-amber-300 mt-0.5">RA-03 Released</div>
-                    <div className="text-[10px] text-slate-400 mt-0.5">UTR: RTGS990142851</div>
+                  <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+                    <div className="text-[10px] text-slate-400 font-medium">RA Bill Status</div>
+                    <div className="text-xs sm:text-sm font-bold text-amber-300 mt-0.5 truncate">{currProj.billStatus}</div>
                   </div>
                 </div>
+
               </div>
 
-              {/* Decorative Glow */}
-              <div className="absolute -bottom-6 -right-6 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute -top-6 -left-6 w-64 h-64 bg-blue-500/15 rounded-full blur-3xl pointer-events-none" />
             </div>
 
           </div>
@@ -1216,6 +1351,48 @@ export default function LandingPage() {
             <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-center gap-2">
               <HelpCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
               <span>Password for all demo accounts is <strong>pass@123</strong></span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Video Modal Overview */}
+      {videoModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fade-in">
+          <div className="bg-slate-900 text-white rounded-2xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl relative border border-slate-800 space-y-4">
+            <button
+              onClick={() => setVideoModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-400/40 text-amber-300 flex items-center justify-center">
+                <Play className="w-5 h-5 fill-amber-300 ml-0.5" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold font-gov text-white">Platform Video Overview</h3>
+                <p className="text-xs text-slate-400">12-Stage Automated Civil Governance & eTendering Workflow</p>
+              </div>
+            </div>
+
+            <div className="relative rounded-xl overflow-hidden bg-slate-950 border border-slate-800 aspect-video flex flex-col items-center justify-center p-6 text-center space-y-4 group">
+              <div className="w-16 h-16 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+                <Play className="w-8 h-8 fill-slate-950 ml-1" />
+              </div>
+              <div>
+                <div className="text-lg font-bold font-gov text-white">Interactive Demonstration Mode</div>
+                <div className="text-xs text-slate-400 max-w-md mx-auto mt-1">
+                  Click 'Explore System Live Demo' to test all 12 stages live with pre-loaded demo accounts (JE, SDO, EE, CE, Contractor).
+                </div>
+              </div>
+              <button
+                onClick={() => { setVideoModalOpen(false); setDemoModalOpen(true); }}
+                className="btn-gov px-6 py-2.5 text-sm"
+              >
+                Launch Live Demo Now
+              </button>
             </div>
           </div>
         </div>
