@@ -1,17 +1,25 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../api/client';
 import { useAuthStore } from '../../store/authStore';
 import toast from 'react-hot-toast';
 import { Building2, Lock, Mail, Loader2, AlertTriangle } from 'lucide-react';
 
 export default function LoginPage() {
+  const [searchParams] = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { login } = useAuthStore();
   const nav = useNavigate();
+
+  useEffect(() => {
+    const qEmail = searchParams.get('email');
+    const qPass = searchParams.get('pass');
+    if (qEmail) setEmail(qEmail);
+    if (qPass) setPassword(qPass);
+  }, [searchParams]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

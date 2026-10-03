@@ -100,6 +100,7 @@ import TrialBalance from './pages/acc/TrialBalance';
 import ContractorProfilePage from './pages/contractor/ContractorProfilePage';
 import EarningsPage from './pages/contractor/EarningsPage';
 import ContractorProjectsPage from './pages/contractor/MyProjectsPage';
+import LandingPage from './pages/LandingPage';
 
 function App() {
   const { loadFromStorage, isAuthenticated } = useAuthStore();
@@ -107,6 +108,8 @@ function App() {
 
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/landing" element={<LandingPage />} />
       <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />} />
       <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <RegisterPage />} />
       <Route path="/register-organization" element={isAuthenticated ? <Navigate to="/dashboard" /> : <RegisterOrgPage />} />
@@ -116,7 +119,6 @@ function App() {
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<DashboardRouter />} />
 
           {/* Super Admin SaaS layer */}
